@@ -39,23 +39,33 @@ build --define framework_shared_object=true
 build --define=use_fast_cpp_protos=true
 build --define=allow_oversize_protos=true
 
-# Make Bazel print out all options from rc files.
-build --announce_rc
-
 build --define=grpc_no_ares=true
 
 build --enable_platform_specific_config
 
 # Default options should come above this line.
 
+# Settings for different C++ dialects
+build:c++14 --cxxopt=-std=c++14
+build:c++14_windows --cxxopt=/std=c++14
+
+build:c++17 --cxxopt=-std=c++17
+build:c++17_windows --cxxopt=/std=c++17
+
+build:c++20 --cxxopt=-std=c++20
+build:c++20_windows --cxxopt=/std=c++20
+
+build:c++2a --cxxopt=-std=c++2a
+build:c++2a_windows --cxxopt=/std=c++latest
+
 # Allow builds using libc++ as a linker library
-# This is mostly for OSSFuzz, so we also pass in the flags from environment to clean build file
 build:libc++ --action_env=CC
 build:libc++ --action_env=CXX
 build:libc++ --action_env=CXXFLAGS=-stdlib=libc++
 build:libc++ --action_env=PATH
 build:libc++ --define force_libcpp=enabled
 build:libc++ --linkopt -fuse-ld=lld
+build:libc++ --cxxopt=-stdlib=libc++
 
 # Sets the default Apple platform to macOS.
 build:macos --apple_platform_type=macos
@@ -66,26 +76,12 @@ build:macos --copt=-DGRPC_BAZEL_BUILD
 # Settings for MacOS on ARM CPUs.
 build:macos_arm64 --cpu=darwin_arm64
 
-# Build TF with C++ 17 features.
-build:c++17 --cxxopt=-std=c++1z
-build:c++17 --cxxopt=-stdlib=libc++
-build:c++1z --config=c++17
-build:c++17_gcc --cxxopt=-std=c++1z
-build:c++1z_gcc --config=c++17_gcc
-
-# By default, build in C++20 mode.
-build:linux --cxxopt=-std=c++2a
-build:linux --host_cxxopt=-std=c++2a
-build:macos --cxxopt=-std=c++2a
-build:macos --host_cxxopt=-std=c++2a
-build:windows --cxxopt=/std:c++latest
-build:windows --host_cxxopt=/std:c++latest
-
 # Make sure to include as little of windows.h as possible
 build:windows --copt=-DWIN32_LEAN_AND_MEAN
 build:windows --host_copt=-DWIN32_LEAN_AND_MEAN
 build:windows --copt=-DNOGDI
 build:windows --host_copt=-DNOGDI
+build:windows --cxxopt=/Zc:__cplusplus
 
 # MSVC (Windows): Standards-conformant preprocessor mode
 # See https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview
@@ -141,15 +137,14 @@ test:release_base --flaky_test_attempts=3
 test:release_base --test_size_filters=small,medium
 
 build:release_cpu_linux --config=release_base
-build:release_cpu_linux --config=avx_linux
-build:release_cpu_linux --crosstool_top="@ubuntu18.04-gcc7_manylinux2010-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain"
+build:release_cpu_linux --config=avx2_linux
 test:release_cpu_linux --test_env=LD_LIBRARY_PATH
 
 build:release_cpu_macos --config=release_base
-build:release_cpu_macos --config=avx_linux
+build:release_cpu_macos --config=avx2_linux
 
 build:release_cpu_windows --config=release_base
-build:release_cpu_windows --config=avx_win
+build:release_cpu_windows --config=avx2_win
 build:release_cpu_windows --define=no_tensorflow_py_deps=true
 # First available in VS 16.4. Speeds Windows compile times by a lot. See
 # https://groups.google.com/a/tensorflow.org/d/topic/build/SsW98Eo7l3o/discussion
