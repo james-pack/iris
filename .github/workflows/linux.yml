@@ -9,7 +9,7 @@ on:
   - cron: '43 04 * * *'
 
 jobs:
-  test_ubuntu-20.04:
+  test_ubuntu-20_04:
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -44,7 +44,7 @@ jobs:
             ${{ matrix.cc }} --version
             CC=${{ matrix.cc }} bazel --output_user_root=${{ env.bazel-user-root }} test --cxxopt='-std=${{ matrix.cpp-dialect }}' //...
 
-  test_ubuntu-18.04:
+  test_ubuntu-18_04:
     runs-on: ${{ matrix.os }}
 
     strategy:
