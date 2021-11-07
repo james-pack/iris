@@ -18,6 +18,7 @@ jobs:
       matrix:
         cc: [clang-10]
         cpp-dialect: [c++20]
+	compilation-mode: [fastbuild]
         os: [ubuntu-20.04]
 
     env:
@@ -44,4 +45,4 @@ jobs:
       - name: Test
         run: |
             ${{ matrix.cc }} --version
-            CC=${{ matrix.cc }} bazel --output_user_root=${{ env.bazel-user-root }} test --cxxopt='-std=${{ matrix.cpp-dialect }}' //...
+            CC=${{ matrix.cc }} bazel --output_user_root=${{ env.bazel-user-root }} test -c '${{ matrix.compilation-mode }}' --config=release_cpu_linux --config='${{ matrix.cpp-dialect }}' //...

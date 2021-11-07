@@ -16,6 +16,7 @@ jobs:
       matrix:
         cc: [clang-10, clang-11, clang-12, gcc-10]
         cpp-dialect: [c++14, c++17, c++20]
+	compilation-mode: [opt, fastbuild, dbg]
         os: [ubuntu-20.04]
 
     env:
@@ -42,7 +43,7 @@ jobs:
       - name: Test
         run: |
             ${{ matrix.cc }} --version
-            CC=${{ matrix.cc }} bazel --output_user_root=${{ env.bazel-user-root }} test --cxxopt='-std=${{ matrix.cpp-dialect }}' //...
+            CC=${{ matrix.cc }} bazel --output_user_root=${{ env.bazel-user-root }} test -c '${{ matrix.compilation-mode }}' --config=release_cpu_linux --config='${{ matrix.cpp-dialect }}' //...
 
   test_ubuntu-18_04:
     runs-on: ${{ matrix.os }}
@@ -51,6 +52,7 @@ jobs:
       matrix:
         cc: [clang-9, gcc-9]
         cpp-dialect: [c++14, c++17, c++2a]
+	compilation-mode: [opt, fastbuild, dbg]
         os: [ubuntu-18.04]
 
     env:
@@ -77,4 +79,4 @@ jobs:
       - name: Test
         run: |
             ${{ matrix.cc }} --version
-            CC=${{ matrix.cc }} bazel --output_user_root=${{ env.bazel-user-root }} test --cxxopt='-std=${{ matrix.cpp-dialect }}' //...
+            CC=${{ matrix.cc }} bazel --output_user_root=${{ env.bazel-user-root }} test -c '${{ matrix.compilation-mode }}' --config=release_cpu_linux --config='${{ matrix.cpp-dialect }}' //...

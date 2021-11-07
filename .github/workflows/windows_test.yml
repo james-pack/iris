@@ -17,7 +17,8 @@ jobs:
 
     strategy:
       matrix:
-        cpp-dialect: [c++14, c++17]
+        cpp-dialect: [c++14_windows, c++17_windows]
+	compilation-mode: [opt, fastbuild, dbg]
       fail-fast: false
 
     env:
@@ -42,4 +43,4 @@ jobs:
             ${{ env.cache-name }}-${{ matrix.os }}
 
       - name: Test
-        run: bazel.exe --output_user_root=${{ env.bazel-user-root }} test -s --cxxopt='/std:${{ matrix.cpp-dialect}}' --cxxopt='/Zc:__cplusplus' //...
+        run: bazel.exe --output_user_root=${{ env.bazel-user-root }} test -c '${{ matrix.compilation-mode }}' --config=release_cpu_windows --config='${{ matrix.cpp-dialect}}' //...
