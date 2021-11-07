@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         cpp-dialect: [c++14_windows, c++17_windows]
-	compilation-mode: [opt, fastbuild, dbg]
+        compilation-mode: [opt, fastbuild, dbg]
       fail-fast: false
 
     env:
