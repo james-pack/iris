@@ -16,8 +16,8 @@ jobs:
 
     strategy:
       matrix:
-        cc: [clang-9, gcc-9]
-        cpp-dialect: [c++14, c++17]
+        cc: [clang, gcc]
+        cpp-dialect: [c++14, c++17, c++20]
         os: [ubuntu-latest]
 
     env:
