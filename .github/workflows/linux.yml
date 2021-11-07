@@ -1,0 +1,80 @@
+# Tests that get run on every commit. This workflow is meant to find basic failures fast. It is not comprehensive.
+name: CI
+
+on:
+  # This workflow can be run manually from the Actions tab.
+  workflow_dispatch:
+  schedule:
+  # Every day at 08:43 UTC (04:43 Eastern)
+  - cron: '43 04 * * *'
+
+jobs:
+  test_ubuntu-20.04:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        cc: [clang-10, clang-11, clang-12, gcc-9, gcc-10]
+        cpp-dialect: [c++14, c++17, c++20]
+        os: [ubuntu-20.04]
+
+    env:
+      bazel-user-root: ~/.cache/bazel/_bazel_${{ github.repository_owner }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Hydrate Bazel cache
+        uses: actions/cache@v2
+        env:
+          cache-name: bazel-build-cache
+
+        with:
+          path: ${{ env.bazel-user-root }}
+          key: ${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.cc }}-${{ matrix.cpp-dialect }}-${{ github.sha }}
+          restore-keys: |
+            ${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.cc }}-${{ matrix.cpp-dialect }}-${{ github.sha }}
+            ${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.cc }}-${{ matrix.cpp-dialect }}
+            ${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.cc }}
+            ${{ env.cache-name }}-${{ matrix.os }}
+
+      - name: Test
+        run: |
+            ${{ matrix.cc }} --version
+            CC=${{ matrix.cc }} bazel --output_user_root=${{ env.bazel-user-root }} test --cxxopt='-std=${{ matrix.cpp-dialect }}' //...
+
+  test_ubuntu-18.04:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        cc: [clang-9, gcc-9, gcc-10]
+        cpp-dialect: [c++14, c++17, c++2a]
+        os: [ubuntu-18.04]
+
+    env:
+      bazel-user-root: ~/.cache/bazel/_bazel_${{ github.repository_owner }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Hydrate Bazel cache
+        uses: actions/cache@v2
+        env:
+          cache-name: bazel-build-cache
+
+        with:
+          path: ${{ env.bazel-user-root }}
+          key: ${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.cc }}-${{ matrix.cpp-dialect }}-${{ github.sha }}
+          restore-keys: |
+            ${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.cc }}-${{ matrix.cpp-dialect }}-${{ github.sha }}
+            ${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.cc }}-${{ matrix.cpp-dialect }}
+            ${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.cc }}
+            ${{ env.cache-name }}-${{ matrix.os }}
+
+      - name: Test
+        run: |
+            ${{ matrix.cc }} --version
+            CC=${{ matrix.cc }} bazel --output_user_root=${{ env.bazel-user-root }} test --cxxopt='-std=${{ matrix.cpp-dialect }}' //...
