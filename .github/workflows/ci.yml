@@ -1,5 +1,5 @@
 # Tests that get run on every commit. This workflow is meant to find basic failures fast. It is not comprehensive.
-name: CI
+name: Commit testing
 
 on:
   push:
