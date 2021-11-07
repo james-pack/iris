@@ -1,0 +1,22 @@
+cc_library(
+    name = "ode",
+    hdrs = [
+        "forward_euler.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//third_party/eigen",
+    ],
+)
+
+cc_test(
+    name = "ode_test",
+    srcs = [
+        "forward_euler_test.cc",
+    ],
+    deps = [
+        ":ode",
+        "//third_party/eigen",
+        "//third_party/gtest",
+    ],
+)
