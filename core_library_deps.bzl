@@ -47,3 +47,14 @@ def core_library_deps():
             strip_prefix = "abseil-cpp-c86347d4cec43074e64e225a8753728f4bfc5ed6",
             urls = ["https://github.com/abseil/abseil-cpp/archive/c86347d4cec43074e64e225a8753728f4bfc5ed6.zip"],
         )
+
+    if not native.existing_rule("com_gitlab_libeigen_eigen"):
+        http_archive(
+            name = "com_gitlab_libeigen_eigen",
+            sha256 = "8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72",
+            strip_prefix = "eigen-3.4.0",
+            urls = [
+                "https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz",
+            ],
+            build_file = "//third_party/eigen:eigen.BUILD",
+        )
