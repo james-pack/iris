@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        cpp-dialect: [c++14, c++17]
+        cpp-dialect: [c++14, c++17, c++latest]
       fail-fast: false
 
     env:
@@ -42,4 +42,4 @@ jobs:
             ${{ env.cache-name }}-${{ matrix.os }}
 
       - name: Test
-        run: bazel.exe --output_user_root=${{ env.bazel-user-root }} test --cxxopt='/std:${{ matrix.cpp-dialect}}' //...
+        run: bazel.exe --output_user_root=${{ env.bazel-user-root }} test --cxxopt='/std:${{ matrix.cpp-dialect}}' --cxxopt='/Zc:__cplusplus' //...
