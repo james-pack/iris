@@ -1,6 +1,7 @@
 cc_library(
     name = "ode",
     hdrs = [
+        "backward_euler.h",
         "forward_euler.h",
     ],
     visibility = ["//visibility:public"],
@@ -12,6 +13,7 @@ cc_library(
 cc_test(
     name = "ode_test",
     srcs = [
+        "backward_euler_test.cc",
         "forward_euler_test.cc",
     ],
     deps = [

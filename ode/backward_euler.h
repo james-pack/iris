@@ -5,12 +5,12 @@
 namespace pack::ode {
 
 /**
- * Naive form of a forward Euler ODE integrator.
+ * Naive form of a backward Euler ODE integrator.
  *
  * TODO(james): Revisit API and implementation as requirements become more clear.
  */
 template <typename U, typename TimeT>
-class ForwardEuler final {
+class BackwardEuler final {
  private:
   U prev_value_;
   TimeT t_;
@@ -18,12 +18,12 @@ class ForwardEuler final {
   const std::function<U(TimeT)> deriv_;
 
  public:
-  ForwardEuler(TimeT start, const U& u0, TimeT time_step, std::function<U(TimeT)> deriv)
+  BackwardEuler(TimeT start, const U& u0, TimeT time_step, std::function<U(TimeT)> deriv)
       : prev_value_(u0), t_(start), time_step_(time_step), deriv_(deriv) {}
 
   const U& operator()() {
-    t_ += time_step_;
     prev_value_ += time_step_ * deriv_(t_);
+    t_ += time_step_;
     return prev_value_;
   }
 };
