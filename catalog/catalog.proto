@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package pack.iris.catalog;
+
+message ObjectSummary {
+  // Identifier for this object.
+  string object_id = 1;
+  // Right ascension
+  float ra = 2;
+  // Declination
+  float dec = 3;
+  // Apparent magnitude
+  float magnitude = 4;
+  // Apparent angular size along the major axis.
+  float angular_size_major = 5;
+  // Apparent angular size along the minor axis.
+  float angular_size_minor = 6;
+  // Primary name. The preferred name to use to refer to this object.
+  string name = 7;
+  // Secondary names for the object. For example, the Andromeda Galaxy might have "Andromeda Galaxy" as the name and
+  // then have the following secondary names: M31, NGC 224, UGC 454, PGC 2557, 2C 56 (Core),[1] CGCG 535-17, MCG
+  // +07-02-016, IRAS 00400+4059, 2MASX J00424433+4116074, GC 116, h 50, Bode 3, Flamsteed 58, Hevelius 32, Ha 3.3, IRC
+  // +40013.
+  repeated string secondary_names = 8;
+}
+
+message Catalog {
+  // Identifier for the catalog or dataset where this information came from.
+  string catalog_id = 1;
+
+  repeated ObjectSummary objects = 2;
+}

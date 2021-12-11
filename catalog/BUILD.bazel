@@ -1,0 +1,58 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+cc_library(
+    name = "catalog",
+    hdrs = [
+        "catalog_reader.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":catalog_cc_proto",
+    ],
+)
+
+cc_library(
+    name = "bright_star_catalog",
+    srcs = [
+        "bright_star_catalog.cc",
+    ],
+    hdrs = [
+        "bright_star_catalog.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":catalog",
+        ":catalog_cc_proto",
+    ],
+)
+
+cc_proto_library(
+    name = "catalog_cc_proto",
+    deps = [":catalog_proto"],
+)
+
+proto_library(
+    name = "catalog_proto",
+    srcs = ["catalog.proto"],
+)
+
+cc_test(
+    name = "bright_star_catalog_test",
+    srcs = ["bright_star_catalog_test.cc"],
+    data = [
+        ":bright_star_catalog_test_data",
+    ],
+    deps = [
+        ":bright_star_catalog",
+        ":catalog",
+        ":catalog_cc_proto",
+        "//third_party/gtest",
+    ],
+)
+
+filegroup(
+    name = "bright_star_catalog_test_data",
+    srcs = [
+        "bright_star_catalog_sample.dat",
+    ],
+)
