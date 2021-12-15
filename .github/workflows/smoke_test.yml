@@ -6,8 +6,6 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
-  # This workflow can also be run manually from the Actions tab.
   workflow_dispatch:
 
 jobs:
@@ -22,7 +20,7 @@ jobs:
         os: [ubuntu-20.04]
 
     env:
-      bazel-user-root: ~/.cache/bazel/_bazel_${{ github.repository_owner }}
+      bazel-output-base: ${HOME}/bazel-out
     
     steps:
       - name: Checkout
@@ -31,10 +29,10 @@ jobs:
       - name: Hydrate Bazel cache
         uses: actions/cache@v2
         env:
-          cache-name: bazel-build-cache
+          cache-name: bazel-output-cache
 
         with:
-          path: ${{ env.bazel-user-root }}
+          path: ${{ env.bazel-output-base }}
           key: ${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.cc }}-${{ matrix.cpp-dialect }}-${{ github.sha }}
           restore-keys: |
             ${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.cc }}-${{ matrix.cpp-dialect }}-${{ github.sha }}
@@ -45,4 +43,26 @@ jobs:
       - name: Test
         run: |
             ${{ matrix.cc }} --version
-            CC=${{ matrix.cc }} bazel --output_user_root=${{ env.bazel-user-root }} test -c '${{ matrix.compilation-mode }}' --config=release_cpu_linux --config='${{ matrix.cpp-dialect }}' //...
+            CC=${{ matrix.cc }} bazel --output_base=${{ env.bazel-output-base }} test -c '${{ matrix.compilation-mode }}' --config=release_cpu_linux --config='${{ matrix.cpp-dialect }}' //...
+
+      - name: Gather artifacts
+        run: |
+            cd ${{ github.workspace }}; tar czhf ~/bazel-testlogs.tgz bazel-testlogs
+
+      - name: Investigate Directory Structure
+        run: |
+            pwd > investigate.txt
+            ls -la >> investigate.txt
+            ls -la ~ >> investigate.txt
+            find ${HOME}/bazel-out/execroot/com_github_james_pack_iris/ -type f >> investigate.txt
+
+      - name: Upload investigation
+        uses: actions/upload-artifact@v2
+        with:
+          name: investigate.txt
+          path: investigate.txt
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: ~/bazel-testlogs.tgz
