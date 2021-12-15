@@ -46,9 +46,6 @@ build --enable_platform_specific_config
 # Default options should come above this line.
 
 # Settings for different C++ dialects
-build:c++14 --cxxopt=-std=c++14
-build:c++14_windows --cxxopt=/std=c++14
-
 build:c++17 --cxxopt=-std=c++17
 build:c++17_windows --cxxopt=/std=c++17
 
