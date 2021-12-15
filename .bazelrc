@@ -10,8 +10,8 @@
 #     avx_linux:              Build with avx instruction set on linux.
 #     avx2_linux:             Build with avx2 instruction set on linux.
 #     native_arch_linux:      Build with instruction sets available to the host machine on linux
-#     avx_win:                Build with avx instruction set on windows
-#     avx2_win:               Build with avx2 instruction set on windows
+#     avx_windows:            Build with avx instruction set on windows
+#     avx2_windows:           Build with avx2 instruction set on windows
 #
 # Other build options:
 #     short_logs:       Only log errors during build, skip warnings.
@@ -47,13 +47,13 @@ build --enable_platform_specific_config
 
 # Settings for different C++ dialects
 build:c++17 --cxxopt=-std=c++17
-build:c++17_windows --cxxopt=/std=c++17
+build:c++17_windows --cxxopt=/std:c++17
 
 build:c++20 --cxxopt=-std=c++20
-build:c++20_windows --cxxopt=/std=c++20
+build:c++20_windows --cxxopt=/std:c++20
 
 build:c++2a --cxxopt=-std=c++2a
-build:c++2a_windows --cxxopt=/std=c++latest
+build:c++2a_windows --cxxopt=/std:c++latest
 
 # Allow builds using libc++ as a linker library
 build:libc++ --action_env=CC
@@ -120,8 +120,8 @@ build:avx_linux --copt=-mavx
 build:avx_linux --host_copt=-mavx
 build:avx2_linux --copt=-mavx2
 build:native_arch_linux --copt=-march=native
-build:avx_win --copt=/arch=AVX
-build:avx2_win --copt=/arch=AVX2
+build:avx_windows --copt=/arch:AVX
+build:avx2_windows --copt=/arch:AVX2
 
 # Config-specific options should come above this line.
 
@@ -140,7 +140,7 @@ build:release_cpu_macos --config=release_base
 build:release_cpu_macos --config=avx2_linux
 
 build:release_cpu_windows --config=release_base
-build:release_cpu_windows --config=avx2_win
+build:release_cpu_windows --config=avx2_windows
 build:release_cpu_windows --define=no_tensorflow_py_deps=true
 # First available in VS 16.4. Speeds Windows compile times by a lot. See
 # https://groups.google.com/a/tensorflow.org/d/topic/build/SsW98Eo7l3o/discussion
