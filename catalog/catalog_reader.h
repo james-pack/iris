@@ -17,7 +17,7 @@ class CatalogReader {
   virtual ~CatalogReader() = default;
 
   // Read the catalog.
-  virtual Catalog read() const = 0;
+  virtual Catalog Read() const = 0;
 };
 
 }  // namespace pack::iris::catalog

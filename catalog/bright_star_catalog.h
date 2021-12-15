@@ -7,6 +7,6 @@
 
 namespace pack::iris::catalog {
 
-std::unique_ptr<CatalogReader> readBrightStarCatalog(const std::string& location);
+std::unique_ptr<CatalogReader> ReadBrightStarCatalog(const std::string& location);
 
 }  // namespace pack::iris::catalog

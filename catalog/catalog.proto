@@ -2,26 +2,64 @@ syntax = "proto3";
 
 package pack.iris.catalog;
 
+message Time {
+  uint32 hour = 1;
+  uint32 minute = 2;
+  float second = 3;
+}
+
+message Angle {
+  int32 degree = 1;
+  uint32 minute = 2;
+  float second = 3;
+}
+
+message RaDec {
+  // Right ascension
+  Time ra = 1;
+  // Declination
+  Angle dec = 2;
+
+  // Epoch for the RA and Dec above.
+  string epoch = 3;
+}
+
+message LatLong {
+  float latitude = 1;
+  float longitude = 2;
+}
+
+message Location {
+  oneof System {
+    RaDec ra_dec = 1;
+    LatLong galactic_coords = 2;
+  }
+}
+
 message ObjectSummary {
   // Identifier for this object.
   string object_id = 1;
-  // Right ascension
-  float ra = 2;
-  // Declination
-  float dec = 3;
-  // Apparent magnitude
+
+  repeated Location locations = 2;
+
+  // Apparent magnitude in visible light. Exact details will be catalog/dataset dependent.
   float magnitude = 4;
-  // Apparent angular size along the major axis.
-  float angular_size_major = 5;
-  // Apparent angular size along the minor axis.
-  float angular_size_minor = 6;
-  // Primary name. The preferred name to use to refer to this object.
-  string name = 7;
+
+  // Size in degrees as viewed from Earth. May be zero, especially in earlier catalogs which assumed stars as point
+  // objects.
+  float angular_size = 5;
+  float eccentricity = 6;
+
+  // The preferred name to use to refer to this object. This might be a common name, like "Sirius", or it might a common
+  // designation like "α Canis Majoris", or it might be an astronomical designation like "HIP 32349". It will often be
+  // blank as well, especially for dimmer and lesser known objects.
+  string primary_name = 7;
+
   // Secondary names for the object. For example, the Andromeda Galaxy might have "Andromeda Galaxy" as the name and
-  // then have the following secondary names: M31, NGC 224, UGC 454, PGC 2557, 2C 56 (Core),[1] CGCG 535-17, MCG
+  // then have the following other designations: M31, NGC 224, UGC 454, PGC 2557, 2C 56 (Core),[1] CGCG 535-17, MCG
   // +07-02-016, IRAS 00400+4059, 2MASX J00424433+4116074, GC 116, h 50, Bode 3, Flamsteed 58, Hevelius 32, Ha 3.3, IRC
   // +40013.
-  repeated string secondary_names = 8;
+  repeated string designations = 8;
 }
 
 message Catalog {
