@@ -49,20 +49,8 @@ jobs:
         run: |
             cd ${{ github.workspace }}; tar czhf ~/bazel-testlogs.tgz bazel-testlogs
 
-      - name: Investigate Directory Structure
-        run: |
-            pwd > investigate.txt
-            ls -la >> investigate.txt
-            ls -la ~ >> investigate.txt
-            find ${HOME}/bazel-out/execroot/com_github_james_pack_iris/ -type f >> investigate.txt
-
-      - name: Upload investigation
-        uses: actions/upload-artifact@v2
-        with:
-          name: investigate.txt
-          path: investigate.txt
-
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
+          name: bazel-testlogs.tgz
           path: ~/bazel-testlogs.tgz
