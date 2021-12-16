@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
 
     env:
-      bazel-user-root: ~/.cache/bazel/_bazel_${{ github.repository_owner }}
+      bazel-output-base: ${HOME}/bazel-out
 
     steps:
       - name: Checkout
@@ -31,10 +31,10 @@ jobs:
       - name: Hydrate Bazel cache
         uses: actions/cache@v2
         env:
-          cache-name: bazel-build-cache
+          cache-name: bazel-output-cache
 
         with:
-          path: ${{ env.bazel-user-root }}
+          path: ${{ env.bazel-output-base }}
           key: ${{ env.cache-name }}-${{ matrix.os }}-${{ github.sha }}
           restore-keys: |
             ${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.cc }}-${{ matrix.cpp-dialect }}-${{ github.sha }}
@@ -43,4 +43,15 @@ jobs:
             ${{ env.cache-name }}-${{ matrix.os }}
         
       - name: Test
-        run: bazel --output_user_root=${{ env.bazel-user-root }} test -s --test_output=all -c '${{ matrix.compilation-mode }}' --config=release_cpu_macos --config='${{ matrix.cpp-dialect}}' //...
+        run: |
+            bazel --output_base=${{ env.bazel-output-base }} test -c '${{ matrix.compilation-mode }}' --config=release_cpu_macos --config='${{ matrix.cpp-dialect }}' //...
+
+      - name: Gather artifacts
+        run: |
+            cd ${{ github.workspace }}; tar czhf ~/bazel-testlogs.tgz bazel-testlogs
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: bazel-testlogs.tgz
+          path: ~/bazel-testlogs.tgz
